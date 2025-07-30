@@ -1,0 +1,26 @@
+<div class="qualifications-container">
+    {% if instructor.qualifications %}
+    <div class="accordion" id="qualificationsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" 
+                        data-bs-toggle="collapse" data-bs-target="#qualificationsCollapse">
+                    <i class="bi bi-file-earmark-text me-2"></i>
+                    View Full Qualifications
+                </button>
+            </h2>
+            <div id="qualificationsCollapse" class="accordion-collapse collapse" 
+                 data-bs-parent="#qualificationsAccordion">
+                <div class="accordion-body">
+                    {{ instructor.qualifications|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        No qualifications added yet
+    </div>
+    {% endif %}
+</div>

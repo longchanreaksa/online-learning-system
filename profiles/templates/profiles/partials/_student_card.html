@@ -1,0 +1,45 @@
+<div class="card shadow-sm">
+    <div class="card-body text-center">
+        <img src="{{ student.profile_photo.url|default:'/static/images/default_profile.png' }}" 
+             class="rounded-circle border border-3 border-primary mb-3 student-photo" 
+             width="120" 
+             height="120"
+             alt="{{ student.display_name }}">
+
+        <h4>{{ student.display_name }}</h4>
+        <p class="text-muted mb-1">
+            {{ student.get_academic_level_display|default:"Student" }}
+            {% if student.graduation_year %}
+            | Class of {{ student.graduation_year }}
+            {% endif %}
+        </p>
+        <p class="text-muted small">
+            {% if student.enrollment_id %}
+            ID: {{ student.enrollment_id }}
+            {% endif %}
+        </p>
+        
+        <hr>
+        
+        <div class="d-flex justify-content-center gap-3">
+            <a href="mailto:{{ student.user.email }}" class="text-decoration-none"
+               data-bs-toggle="tooltip" title="Email">
+                <i class="bi bi-envelope-fill fs-5 text-primary"></i>
+            </a>
+            
+            {% if student.user.profile.phone %}
+            <a href="tel:{{ student.user.profile.phone }}" class="text-decoration-none"
+               data-bs-toggle="tooltip" title="Call">
+                <i class="bi bi-telephone-fill fs-5 text-success"></i>
+            </a>
+            {% endif %}
+            
+            {% if student.user.profile.social_links %}
+            <a href="{{ student.user.profile.social_links }}" target="_blank" class="text-decoration-none"
+               data-bs-toggle="tooltip" title="Social Media">
+                <i class="bi bi-person-circle fs-5 text-info"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>

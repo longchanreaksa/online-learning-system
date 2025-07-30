@@ -1,0 +1,48 @@
+<div class="academic-progress">
+    <div class="mb-3">
+        <div class="d-flex justify-content-between">
+            <span>GPA</span>
+            <strong>
+                {% if student.gpa %}
+                {{ student.gpa }}/4.0
+                {% else %}
+                Not Available
+                {% endif %}
+            </strong>
+        </div>
+        {% if student.gpa %}
+        <div class="progress mt-1" style="height: 8px;">
+            <div class="progress-bar bg-info" 
+                 role="progressbar" 
+                 style="width: {{ student.gpa|multiply:25 }}%" 
+                 aria-valuenow="{{ student.gpa|multiply:25 }}" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="mb-3">
+        <div class="d-flex justify-content-between">
+            <span>Credits Earned</span>
+            <strong>{{ completed_credits }}/{{ total_required_credits }}</strong>
+        </div>
+        <div class="progress mt-1" style="height: 8px;">
+            <div class="progress-bar bg-success" 
+                 role="progressbar" 
+                 style="width: {{ credit_completion }}%" 
+                 aria-valuenow="{{ credit_completion }}" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+            </div>
+        </div>
+    </div>
+    
+    {% if student.academic_level %}
+    <div class="d-flex justify-content-between">
+        <span>Academic Level</span>
+        <strong>{{ student.get_academic_level_display }}</strong>
+    </div>
+    {% endif %}
+</div>

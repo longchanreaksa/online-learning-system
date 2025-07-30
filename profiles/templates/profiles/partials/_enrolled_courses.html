@@ -1,0 +1,58 @@
+{% if enrolled_courses %}
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Instructor</th>
+                <th>Progress</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in enrolled_courses %}
+            <tr>
+                <td>
+                    <a href="{{ course.get_absolute_url }}" class="text-decoration-none">
+                        <strong>{{ course.title }}</strong>
+                    </a>
+                    <br>
+                    <small class="text-muted">{{ course.code }}</small>
+                </td>
+                <td>
+                    <a href="{% url 'profiles:instructor_detail' course.instructor.id %}" 
+                       class="text-decoration-none">
+                        {{ course.instructor.display_name }}
+                    </a>
+                </td>
+                <td>
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar bg-success" 
+                             role="progressbar" 
+                             aria-valuenow="{{ course.progress }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            {{ course.progress }}%
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <a href="{{ course.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-journal-text"></i> Continue
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="text-center py-4">
+    <i class="bi bi-journal-x fs-1 text-muted"></i>
+    <h5 class="mt-3">No Enrolled Courses</h5>
+    <p>Get started by exploring our course catalog</p>
+    <a href="{% url 'courses:catalog' %}" class="btn btn-primary">
+        Browse Courses
+    </a>
+</div>
+{% endif %}

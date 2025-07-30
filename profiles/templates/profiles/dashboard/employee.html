@@ -1,0 +1,116 @@
+{% extends "profiles/dashboard/base.html" %}
+{% load static humanize %}
+
+{% block page_title %}Employee Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Employee Profile Card -->
+    <div class="col-md-4 mb-4">
+        {% include "profiles/partials/_employee_card.html" %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-8">
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h6 class="card-title">Tenure</h6>
+                        <h3>{{ employee.tenure }} year{{ employee.tenure|pluralize }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h6 class="card-title">Department</h6>
+                        <h3>{{ employee.get_department_display }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h6 class="card-title">Status</h6>
+                        <h3>{% if employee.is_full_time %}Full-Time{% else %}Part-Time{% endif %}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employee Details -->
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-person-badge me-2"></i> Employment Details
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Employee ID:</th>
+                                <td>{{ employee.employee_id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Position:</th>
+                                <td>{{ employee.position }}</td>
+                            </tr>
+                            <tr>
+                                <th>Hire Date:</th>
+                                <td>{{ employee.hire_date|date:"M d, Y" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-sm">
+                            <tr>
+                                <th>Supervisor:</th>
+                                <td>
+                                    {% if employee.supervisor %}
+                                    <a href="{% url 'profiles:employee_detail' employee.supervisor.id %}">
+                                        {{ employee.supervisor.display_name }}
+                                    </a>
+                                    {% else %}
+                                    <span class="text-muted">None</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Subordinates:</th>
+                                <td>
+                                    {% if employee.subordinates.exists %}
+                                    {{ employee.subordinates.count }}
+                                    {% else %}
+                                    <span class="text-muted">None</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Actions -->
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <i class="bi bi-clock-history me-2"></i> Recent System Actions
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for log in recent_actions %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ log.action }}</span>
+                        <small class="text-muted">{{ log.timestamp|naturaltime }}</small>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">No recent actions</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

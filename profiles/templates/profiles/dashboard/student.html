@@ -1,0 +1,131 @@
+{% extends "profiles/dashboard/base.html" %}
+{% load static humanize %}
+
+{% block page_title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Student Profile Card -->
+    <div class="col-lg-4 mb-4">
+        {% include "profiles/partials/_student_card.html" %}
+        
+        <!-- Academic Summary -->
+        <div class="card mt-4 border-primary">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-mortarboard me-2"></i> Academic Status
+            </div>
+            <div class="card-body">
+                {% include "profiles/partials/_academic_progress.html" %}
+                <a href="{% url 'profiles:academic_record' %}" class="btn btn-outline-primary btn-sm mt-2 w-100">
+                    View Full Transcript
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-lg-8">
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body">
+                        <h6 class="card-title">Enrolled Courses</h6>
+                        <h2>{{ enrolled_courses.count }}</h2>
+                        <a href="{% url 'courses:my_courses' %}" class="text-white stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-info text-white h-100">
+                    <div class="card-body">
+                        <h6 class="card-title">Completion Rate</h6>
+                        <h2>{{ completion_rate }}%</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-warning text-dark h-100">
+                    <div class="card-body">
+                        <h6 class="card-title">Upcoming Deadlines</h6>
+                        <h2>{{ pending_assignments }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Courses -->
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-journal-bookmark me-2"></i> My Courses
+            </div>
+            <div class="card-body">
+                {% include "profiles/partials/_enrolled_courses.html" %}
+                <div class="text-center mt-3">
+                    <a href="{% url 'courses:catalog' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i> Enroll in New Course
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <i class="bi bi-clock-history me-2"></i> Recent Activity
+            </div>
+            <div class="card-body">
+                {% if recent_activity %}
+                <div class="list-group">
+                    {% for activity in recent_activity %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="mb-1">{{ activity.course.title }}</h6>
+                                <p class="mb-1 small">{{ activity.description }}</p>
+                            </div>
+                            <small class="text-muted">{{ activity.timestamp|naturaltime }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'activity:feed' %}" class="btn btn-sm btn-outline-secondary mt-3">
+                    View All Activity
+                </a>
+                {% else %}
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-activity fs-1"></i>
+                    <p class="mt-2">No recent activity found</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize course progress bars
+document.addEventListener('DOMContentLoaded', function() {
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach(bar => {
+        const width = bar.getAttribute('aria-valuenow');
+        bar.style.width = width + '%';
+    });
+    
+    // Tooltips initialization
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+document.querySelectorAll('.progress-bar').forEach(bar => {
+    const gpa = parseFloat(bar.dataset.gpa);
+    if (!isNaN(gpa)) {
+        bar.style.width = (gpa * 25) + '%';
+        bar.setAttribute('aria-valuenow', gpa * 25);
+    }
+});
+</script>
+{% endblock %}

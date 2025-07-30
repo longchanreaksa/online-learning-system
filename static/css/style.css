@@ -1,0 +1,17 @@
+/* For tag checkboxes */
+.tag-selector {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 10px;
+}
+
+/* Image preview */
+.img-preview {
+    max-width: 100%;
+    height: auto;
+    border: 1px dashed #ccc;
+    padding: 5px;
+    margin-top: 10px;
+}

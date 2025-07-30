@@ -1,0 +1,28 @@
+<div class="card shadow-sm">
+    <div class="card-body text-center">
+        <img src="{{ employee.profile_photo.url|default:'/static/images/default_profile.png' }}" 
+             class="rounded-circle border border-3 border-primary mb-3" 
+             width="120" 
+             height="120"
+             alt="{{ employee.display_name }}">
+
+        <h4>{{ employee.display_name }}</h4>
+        <p class="text-muted mb-1">{{ employee.position }}</p>
+        <p class="text-muted small">{{ employee.department|title }} Department</p>
+        
+        <hr>
+        
+        <div class="d-flex justify-content-center gap-3">
+            <a href="mailto:{{ employee.user.email }}" class="text-decoration-none" 
+               data-bs-toggle="tooltip" title="Email">
+                <i class="bi bi-envelope-fill fs-5 text-primary"></i>
+            </a>
+            {% if employee.user.profile.phone %}
+            <a href="tel:{{ employee.user.profile.phone }}" class="text-decoration-none" 
+               data-bs-toggle="tooltip" title="Call">
+                <i class="bi bi-telephone-fill fs-5 text-success"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>

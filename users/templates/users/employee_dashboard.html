@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Employee Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .table-hover tr[data-href] {
+        cursor: pointer;
+    }
+    .table-hover tr[data-href]:hover {
+        background-color: rgba(0, 0, 0, 0.075);
+    }
+    #sidebar {
+        min-height: 100vh;
+    }
+    .sidebar .nav-link {
+        color: rgba(255, 255, 255, 0.75);
+    }
+    .sidebar .nav-link.active {
+        color: white;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    .sidebar .nav-link:hover {
+        color: white;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    .card-stat {
+        transition: transform 0.2s;
+    }
+    .card-stat:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+            <div class="position-sticky pt-3">
+                <div class="text-center mb-4">
+                    <img src="{% if request.user.profile_photo %}{{ request.user.profile_photo.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" 
+                        class="rounded-circle" width="80" height="80" alt="Profile">
+                    <h5 class="mt-2 text-white">{{ request.user.get_full_name }}</h5>
+                    <p class="text-muted">Employee</p>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'users:employee_dashboard' %}">
+                            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'admin:index' %}" class="btn btn-primary">
+                            <i class="bi bi-people me-1"></i> Admin Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:courses_course_changelist' %}">
+                            <i class="bi bi-book me-2"></i>Course Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}">
+                            <i class="bi bi-bar-chart me-2"></i>Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users:profile' %}">
+                            <i class="bi bi-gear me-2"></i>Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Employee Dashboard</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary export-btn">
+                            <i class="bi bi-download me-1"></i>Export
+                        </button>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="timePeriodDropdown" data-bs-toggle="dropdown">
+                            <i class="bi bi-calendar me-1"></i>
+                            This Week
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="timePeriodDropdown">
+                            <li><a class="dropdown-item time-period" href="#" data-period="week">This Week</a></li>
+                            <li><a class="dropdown-item time-period" href="#" data-period="month">This Month</a></li>
+                            <li><a class="dropdown-item time-period" href="#" data-period="year">This Year</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary mb-3 card-stat">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Total Users</h6>
+                                    <h2 class="mb-0">{{ total_users }}</h2>
+                                    <small class="text-white-50">{{ new_users_week }} new this week</small>
+                                </div>
+                                <i class="bi bi-people fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success mb-3 card-stat">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Active Courses</h6>
+                                    <h2 class="mb-0">{{ published_courses }}</h2>
+                                    <small class="text-white-50">{{ new_courses_month }} new this month</small>
+                                </div>
+                                <i class="bi bi-book fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning mb-3 card-stat">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Pending Requests</h6>
+                                    <h2 class="mb-0">{{ pending_requests }}</h2>
+                                    <small class="text-white-50">{{ pending_tasks|length }} tasks</small>
+                                </div>
+                                <i class="bi bi-exclamation-triangle fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger mb-3 card-stat">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Issues Reported</h6>
+                                    <h2 class="mb-0">{{ reported_issues }}</h2>
+                                    <small class="text-white-50">Need attention</small>
+                                </div>
+                                <i class="bi bi-bug fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Table -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Activity</h5>
+                    <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">User</th>
+                                    <th scope="col">Action</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for activity in recent_activities %}
+                                <tr data-href="{% url 'courses:course_detail' slug=activity.enrollment.course.slug %}">
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>
+                                        <a href="{% url 'profiles:public_profile' user_id=activity.enrollment.student.user.id %}">
+                                            {{ activity.enrollment.student.user.username }}
+                                        </a>
+                                    </td>
+                                    <td>{{ activity.action }}</td>
+                                    <td>{{ activity.timestamp|timesince }} ago</td>
+                                    <td>
+                                        <span class="badge bg-{{ activity.get_status_class }}">
+                                            {{ activity.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No recent activity</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                                <a href="/admin/auth/user/add/" class="btn btn-primary me-md-2 mb-2">
+                                    <i class="bi bi-plus-circle me-1"></i>Add User
+                                </a>
+                                <a href="{% url 'courses:course_create' %}" class="btn btn-success me-md-2 mb-2">
+                                    <i class="bi bi-plus-circle me-1"></i>Create Course
+                                </a>
+                                <a href="mailto:admin@example.com?subject=System Notification" class="btn btn-warning me-md-2 mb-2">
+                                    <i class="bi bi-envelope me-1"></i>Send Notification
+                                </a>
+                                <button class="btn btn-info mb-2" id="generate-report">
+                                    <i class="bi bi-file-earmark-text me-1"></i>Generate Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>Pending Tasks</h5>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                {% for task in pending_tasks %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <input class="form-check-input me-2" type="checkbox" id="task-{{ forloop.counter }}">
+                                        <label class="form-check-label" for="task-{{ forloop.counter }}">
+                                            {{ task.description }}
+                                        </label>
+                                    </div>
+                                    <span class="badge bg-{{ task.priority_class }} rounded-pill">
+                                        {{ task.get_priority_display }}
+                                    </span>
+                                </li>
+                                {% empty %}
+                                <li class="list-group-item">No pending tasks</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Generate Report button functionality
+    document.getElementById('generate-report').addEventListener('click', function(e) {
+        e.preventDefault();
+        const btn = this;
+        const originalHTML = btn.innerHTML;
+        
+        // Show loading state
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Generating...';
+        
+        // Simulate API call
+        setTimeout(() => {
+            // Create a download link
+            const blob = new Blob(["Sample report content"], {type: "text/plain"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'system_report_' + new Date().toISOString().slice(0, 10) + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Reset button
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+            
+            // Show success toast
+            const toastHTML = `
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header bg-success text-white">
+                            <strong class="me-auto">Success</strong>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            Report generated and downloaded successfully!
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', toastHTML);
+            setTimeout(() => document.querySelector('.toast').remove(), 3000);
+        }, 1500);
+    });
+    
+    // Make table rows clickable
+    document.querySelectorAll('.table-hover tr[data-href]').forEach(row => {
+        row.addEventListener('click', function(e) {
+            // Don't navigate if clicking on a link inside the row
+            if (e.target.tagName === 'A' || e.target.closest('a')) {
+                return;
+            }
+            window.location.href = this.dataset.href;
+        });
+    });
+    
+    // Time period dropdown functionality
+    document.querySelectorAll('.time-period').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const period = this.dataset.period;
+            const dropdownToggle = document.getElementById('timePeriodDropdown');
+            
+            // Update dropdown text
+            let periodText = 'This Week';
+            if (period === 'month') periodText = 'This Month';
+            if (period === 'year') periodText = 'This Year';
+            
+            dropdownToggle.innerHTML = `
+                <i class="bi bi-calendar me-1"></i>
+                ${periodText}
+            `;
+            
+            // Here you would typically reload data based on the selected period
+            console.log('Selected period:', period);
+        });
+    });
+    
+    // Export button functionality
+    document.querySelector('.export-btn').addEventListener('click', function() {
+        // Simple CSV export example
+        const csvContent = "data:text/csv;charset=utf-8,";
+        const rows = [
+            ["Metric", "Value"],
+            ["Total Users", "{{ total_users }}"],
+            ["Active Courses", "{{ published_courses }}"],
+            ["Pending Requests", "{{ pending_requests }}"],
+            ["Reported Issues", "{{ reported_issues }}"]
+        ];
+        
+        const csv = rows.map(e => e.join(",")).join("\n");
+        const encodedUri = encodeURI(csvContent + csv);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "dashboard_export.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+});
+</script>
+{% endblock %}

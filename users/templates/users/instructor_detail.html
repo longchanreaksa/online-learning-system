@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ instructor.user.get_full_name }} - Instructor{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Left Column - Profile -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <!-- Profile Photo -->
+                    <div class="mb-3">
+                        {% if instructor.profile_photo %}
+                            <img src="{{ instructor.profile_photo.url }}" 
+                                 class="rounded-circle img-thumbnail" 
+                                 width="200" 
+                                 height="200"
+                                 alt="{{ instructor.user.get_full_name }}">
+                        {% else %}
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" 
+                                 style="width: 200px; height: 200px; margin: 0 auto;">
+                                <i class="bi bi-person-fill text-muted" style="font-size: 4rem;"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Basic Info -->
+                    <h2>{{ instructor.user.get_full_name }}</h2>
+                    <p class="text-muted mb-3">Instructor</p>
+                    
+                    <!-- Stats -->
+                    <div class="d-flex justify-content-around mb-4">
+                        <div>
+                            <div class="h4 mb-0">{{ instructor.courses.count }}</div>
+                            <small class="text-muted">Courses</small>
+                        </div>
+                        <div>
+                            <div class="h4 mb-0">{{ instructor.get_student_count }}</div>
+                            <small class="text-muted">Students</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Links (optional) -->
+                    {% if instructor.website or instructor.linkedin %}
+                    <div class="mb-3">
+                        {% if instructor.website %}
+                        <a href="{{ instructor.website }}" class="btn btn-sm btn-outline-secondary me-1">
+                            <i class="bi bi-globe"></i>
+                        </a>
+                        {% endif %}
+                        {% if instructor.linkedin %}
+                        <a href="{{ instructor.linkedin }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column - Bio and Courses -->
+        <div class="col-lg-8">
+            <!-- Bio -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">About</h3>
+                    {% if instructor.bio %}
+                        <p class="card-text">{{ instructor.bio|linebreaks }}</p>
+                    {% else %}
+                        <p class="text-muted">No bio provided.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Courses -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Courses by {{ instructor.user.first_name }}</h3>
+                    {% if courses %}
+                        <div class="list-group">
+                            {% for course in courses %}
+                            <a href="{% url 'courses:course_detail' course.id %}" 
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between">
+                                    <strong>{{ course.title }}</strong>
+                                    <span class="badge bg-primary rounded-pill">
+                                        {{ course.enrollments.count }} students
+                                    </span>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No courses available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

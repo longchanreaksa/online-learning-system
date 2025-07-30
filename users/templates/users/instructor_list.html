@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Instructors - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">Our Instructors</h1>
+            <p class="lead">Learn from industry experts with real-world experience</p>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for instructor in instructors %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <!-- Instructor Image -->
+                    <div class="mb-3">
+                        {% if instructor.profile_photo %}
+                            <img src="{{ instructor.profile_photo.url }}" 
+                                 class="rounded-circle img-thumbnail" 
+                                 width="150" 
+                                 height="150"
+                                 alt="{{ instructor.user.get_full_name }}">
+                        {% else %}
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" 
+                                 style="width: 150px; height: 150px; margin: 0 auto;">
+                                <i class="bi bi-person-fill text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Instructor Info -->
+                    <h3 class="h5">{{ instructor.user.get_full_name }}</h3>
+                    
+                    {% if instructor.bio %}
+                        <p class="text-muted mb-3">{{ instructor.bio|truncatewords:20 }}</p>
+                    {% endif %}
+                    
+                    <!-- Stats -->
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="px-3 text-center">
+                            <div class="h5 mb-0">{{ instructor.courses.count }}</div>
+                            <small class="text-muted">Courses</small>
+                        </div>
+                        <div class="px-3 text-center">
+                            <div class="h5 mb-0">{{ instructor.get_student_count }}</div>
+                            <small class="text-muted">Students</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Button -->
+                    <a href="{% url 'users:instructor_detail' instructor.id %}" 
+                       class="btn btn-outline-primary btn-sm">
+                        View Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">No instructors found.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

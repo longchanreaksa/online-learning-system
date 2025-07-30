@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body" style="border-left: 5px solid {{ tag.color }};">
+            <h1 class="card-title">{{ tag.name }}</h1>
+            <div class="mb-3">
+                <span class="badge" style="background-color: {{ tag.color }}; color: white;">
+                    {{ tag.color }}
+                </span>
+            </div>
+            <p>Created at: {{ tag.created_at|date:"M d, Y" }}</p>
+            
+            <div class="mt-4">
+                <a href="{% url 'categories:tag_update' tag.slug %}" class="btn btn-outline-primary">
+                    Edit Tag
+                </a>
+                <a href="{% url 'categories:tag_delete' tag.slug %}" class="btn btn-outline-danger">
+                    Delete Tag
+                </a>
+                <a href="{% url 'categories:tag_list' %}" class="btn btn-secondary">
+                    Back to Tags
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
