@@ -1,8 +1,76 @@
--Install 
+# Online Learning System
 
-+Users      username      password
--Admin      admin         admin
--Student    reaksa        reaksa123123
--instructor long          long123123
--instructor rotana        rotana123123
--Employee   leader        leader123123
+A lightweight online learning platform for creating courses, lessons, quizzes, and tracking student progress.
+
+Features
+- User roles: admin, instructor, student
+- Course and lesson management
+- Quizzes and basic auto-grading
+- Progress tracking and simple analytics
+- File/video attachments and rich text content
+
+Tech stack
+- Backend: (e.g., Node.js / Django — replace with actual)
+- Frontend: (e.g., React / Vue)
+- Database: PostgreSQL / MySQL
+- Authentication: JWT (or replace as used)
+
+Quickstart (local)
+1. Clone repository
+   git clone https://github.com/longchanreaksa/online-learning-system.git
+   cd online-learning-system
+2. Install dependencies
+   # example for Node
+   npm install
+3. Create environment file
+   cp .env.example .env
+   # set DATABASE_URL, JWT_SECRET, PORT, etc.
+4. Database
+   # create DB and run migrations (example)
+   createdb online_learning
+   npm run migrate
+5. Run
+   npm run dev
+   Open http://localhost:3000
+
+Environment (example)
+- DATABASE_URL=postgres://user:pass@localhost:5432/online_learning
+- JWT_SECRET=your_jwt_secret
+- PORT=3000
+
+Testing
+- Run unit and integration tests:
+  npm test
+
+Docker (optional)
+- Build and start:
+  docker-compose up --build
+- Ensure env vars are set in docker-compose or .env
+
+Deployment notes
+- Use environment variables for secrets
+- Use managed DB (RDS / Cloud SQL) and object storage (S3)
+- Serve static assets via CDN in production
+
+Project layout (high level)
+- /backend - API and server code
+- /frontend - client app
+- /docs - design & screenshots
+- /migrations - DB migrations
+- docker-compose.yml, Dockerfile, README.md
+
+Contributing
+1. Fork the repo
+2. Create a branch: git checkout -b feat/your-feature
+3. Commit, push, and open a PR
+Please include tests and update docs for major changes.
+
+License
+- MIT (or replace with your chosen license)
+- Add a LICENSE file at the repository root
+
+Contact
+- Maintainer: @longchanreaksa
+- Repo: https://github.com/longchanreaksa/online-learning-system
+
+If you want, I can commit this README to main or create a PR — tell me which branch to use.
