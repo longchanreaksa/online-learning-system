@@ -112,32 +112,20 @@ class Instructor(Profile):
         max_length=100,
         help_text="Your primary field of expertise"
     )
-    is_verified = models.BooleanField(
-        default=False,
-        help_text="Designates whether the instructor has been vetted"
-    )
+    is_verified = models.BooleanField(default=False)
     years_of_experience = models.PositiveIntegerField(default=0)
     website = models.URLField(blank=True)
-    hourly_rate = models.DecimalField(
-        max_digits=6,
-        decimal_places=2,
-        null=True,
-        blank=True
-    )
-    profile_photo = models.ImageField(
-        upload_to=profile_photo_path,
-        default='default_profile.png',
-        blank=True
-    )
+    hourly_rate = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    profile_photo = models.ImageField(upload_to=profile_photo_path, default='default_profile.png', blank=True)
 
     class Meta(Profile.Meta):
         verbose_name = "Instructor Profile"
         verbose_name_plural = "Instructor Profiles"
         constraints = [
             models.CheckConstraint(
-                check=models.Q(years_of_experience__lte=50),
-                name="reasonable_experience_years"
-            )
+                condition=models.Q(years_of_experience__lte=50),
+                name="reasonable_experience_years",
+            ),
         ]
 
     def clean(self):
