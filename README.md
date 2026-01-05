@@ -104,11 +104,4 @@ DATABASES = {
 }
 ```
 
-Important: Never commit production SECRET_KEY or .env files to source control.
-
 ---
-
-If you'd like, I can:
-- tailor this README to your exact folder structure (I can update paths/commands if Django is at `/backend` or repo root),
-- add a sample `.env.example`,
-- or create a `production.md` with step-by-step deployment instructions for a specific host (Heroku, DigitalOcean, AWS).
