@@ -105,3 +105,15 @@ DATABASES = {
 ```
 
 ---
+
+## Default Users
+
+| Role        | Username | Password     |
+|-------------|----------|--------------|
+| Admin       | admin    | admin        |
+| Student     | reaksa   | reaksa123123 |
+| Instructor  | long     | long123123   |
+| Instructor  | rotana   | rotana123123 |
+| Employee    | leader   | leader123123 |
+
+---
