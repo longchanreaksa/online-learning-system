@@ -1,76 +1,88 @@
 # Online Learning System
 
-A lightweight online learning platform for creating courses, lessons, quizzes, and tracking student progress.
+A lightweight platform for creating courses, lessons, quizzes and tracking student progress.
 
-Features
-- User roles: admin, instructor, student
-- Course and lesson management
-- Quizzes and basic auto-grading
+## Features
+- Roles: admin, instructor, student
+- Course & lesson management
+- Quizzes with basic auto-grading
 - Progress tracking and simple analytics
-- File/video attachments and rich text content
+- File/video attachments and rich text
 
-Tech stack
-- Backend: (e.g., Node.js / Django — replace with actual)
-- Frontend: (e.g., React / Vue)
+## Tech stack (example)
+- Backend: Node.js / Django
+- Frontend: React / Vue
 - Database: PostgreSQL / MySQL
-- Authentication: JWT (or replace as used)
+- Auth: JWT (or replace as used)
+- Optional: Docker, S3-compatible storage
 
-Quickstart (local)
-1. Clone repository
-   git clone https://github.com/longchanreaksa/online-learning-system.git
-   cd online-learning-system
-2. Install dependencies
-   # example for Node
-   npm install
-3. Create environment file
-   cp .env.example .env
-   # set DATABASE_URL, JWT_SECRET, PORT, etc.
-4. Database
-   # create DB and run migrations (example)
-   createdb online_learning
-   npm run migrate
-5. Run
-   npm run dev
-   Open http://localhost:3000
+## Quickstart (local)
+1. Clone
+```bash
+git clone https://github.com/longchanreaksa/online-learning-system.git
+cd online-learning-system
+```
+2. Install (example)
+```bash
+# backend
+cd backend && npm install
+# frontend
+cd ../frontend && npm install
+```
+3. Environment
+```bash
+cp .env.example .env
+# set DATABASE_URL, JWT_SECRET, PORT, etc.
+```
+4. Database & migrations
+```bash
+createdb online_learning
+cd backend
+npm run migrate    # or appropriate migrate command
+```
+5. Run (development)
+```bash
+# backend
+npm run dev
+# frontend (separate terminal)
+cd ../frontend && npm run dev
+# open http://localhost:3000 (or configured PORT)
+```
 
-Environment (example)
-- DATABASE_URL=postgres://user:pass@localhost:5432/online_learning
-- JWT_SECRET=your_jwt_secret
-- PORT=3000
+## Testing
+Run unit/integration tests:
+```bash
+# from repo root or appropriate subdir
+npm test
+```
 
-Testing
-- Run unit and integration tests:
-  npm test
+## Docker (optional)
+Build and start with docker-compose:
+```bash
+docker-compose up --build
+```
+Ensure env vars are provided to docker-compose or via .env.
 
-Docker (optional)
-- Build and start:
-  docker-compose up --build
-- Ensure env vars are set in docker-compose or .env
-
-Deployment notes
-- Use environment variables for secrets
+## Deployment notes
+- Store secrets in env vars or a secret manager (do NOT commit .env)
 - Use managed DB (RDS / Cloud SQL) and object storage (S3)
-- Serve static assets via CDN in production
+- Serve static assets via CDN; enable HTTPS and health checks
 
-Project layout (high level)
-- /backend - API and server code
-- /frontend - client app
-- /docs - design & screenshots
-- /migrations - DB migrations
-- docker-compose.yml, Dockerfile, README.md
+## Project layout (high level)
+- /backend — API and server code
+- /frontend — client app
+- /docs — design & screenshots
+- /migrations — DB migrations
+- docker-compose.yml, Dockerfile, README
 
-Contributing
+## Contributing
 1. Fork the repo
-2. Create a branch: git checkout -b feat/your-feature
-3. Commit, push, and open a PR
-Please include tests and update docs for major changes.
+2. Create a branch: `git checkout -b feat/your-feature`
+3. Commit, push, open a PR; include tests and update docs for major changes
 
-License
-- MIT (or replace with your chosen license)
-- Add a LICENSE file at the repository root
+## License
+- MIT (add a LICENSE file at the repository root or replace with your chosen license)
 
-Contact
-- Maintainer: @longchanreaksa
+## Contact
+- Maintainer: [@longchanreaksa](https://github.com/longchanreaksa)
 - Repo: https://github.com/longchanreaksa/online-learning-system
-
-If you want, I can commit this README to main or create a PR — tell me which branch to use.
